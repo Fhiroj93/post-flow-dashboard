@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
-import { useGoogleSheets } from "@/hooks/useGoogleSheets";
+import { useGoogleSheets, type SheetRow } from "@/hooks/useGoogleSheets";
 import { useTheme } from "@/hooks/useTheme";
-import ProgressBar from "@/components/dashboard/ProgressBar";
 import Header from "@/components/dashboard/Header";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import TabSwitcher, { type TabKey } from "@/components/dashboard/TabSwitcher";
 import SearchFilter from "@/components/dashboard/SearchFilter";
 import DataTable, { type ColumnDef } from "@/components/dashboard/DataTable";
 import ImageModal from "@/components/dashboard/ImageModal";
+import RowDetailSidebar from "@/components/dashboard/RowDetailSidebar";
 
 const rssColumns: ColumnDef[] = [
   { key: "title", label: "Title", truncate: 60 },
@@ -74,12 +74,13 @@ function getStatus(row: Record<string, string>, tab: TabKey): string {
 }
 
 const Index = () => {
-  const { data, loading, syncing, lastUpdated, progress, refresh } = useGoogleSheets();
+  const { data, loading, syncing, lastUpdated, refresh } = useGoogleSheets();
   const { dark, toggle } = useTheme();
   const [tab, setTab] = useState<TabKey>("rss");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [modalImage, setModalImage] = useState<string | null>(null);
+  const [selectedRow, setSelectedRow] = useState<SheetRow | null>(null);
 
   const filteredRows = useMemo(() => {
     let rows = data[tab];
@@ -95,18 +96,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen animated-bg transition-theme">
-      <ProgressBar progress={progress} />
       <div className="max-w-7xl mx-auto">
         <Header dark={dark} onToggleTheme={toggle} lastUpdated={lastUpdated} syncing={syncing} onRefresh={refresh} />
         <SummaryCards data={data} loading={loading} />
         <TabSwitcher active={tab} onChange={(t) => { setTab(t); setSearch(""); setStatusFilter("all"); }} />
         <SearchFilter search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} />
-        <DataTable rows={filteredRows} columns={columnMap[tab]} loading={loading} onImageClick={setModalImage} />
+        <DataTable rows={filteredRows} columns={columnMap[tab]} loading={loading} onImageClick={setModalImage} onRowClick={setSelectedRow} />
         <footer className="text-center py-6 text-xs text-muted-foreground">
           PostFlow Dashboard v1.0 — {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </footer>
       </div>
       <ImageModal src={modalImage} onClose={() => setModalImage(null)} />
+      <RowDetailSidebar row={selectedRow} open={!!selectedRow} onClose={() => setSelectedRow(null)} onImageClick={setModalImage} />
     </div>
   );
 };

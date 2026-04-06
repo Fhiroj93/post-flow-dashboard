@@ -1,4 +1,4 @@
-import { X, ExternalLink, Play, Image as ImageIcon } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 import type { SheetRow } from "@/hooks/useGoogleSheets";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
