@@ -86,6 +86,8 @@
 }
 
 @layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .transition-theme {
     @apply transition-colors duration-200;
   }
