@@ -10,47 +10,45 @@ import DataTable, { type ColumnDef } from "@/components/dashboard/DataTable";
 import ImageModal from "@/components/dashboard/ImageModal";
 
 const rssColumns: ColumnDef[] = [
-  { key: "Title", label: "Title", truncate: 60 },
-  { key: "Media Type", label: "Media Type", type: "badge", badgeMap: { image: "blue", video: "purple", text: "gray" } },
-  { key: "Status", label: "Status", type: "badge", badgeMap: { posted: "green", failed: "red", pending: "yellow" } },
+  { key: "title", label: "Title", truncate: 60 },
+  { key: "mediaType", label: "Media Type", type: "badge", badgeMap: { image: "blue", video: "purple", text: "gray" } },
+  { key: "status", label: "Status", type: "badge", badgeMap: { posted: "green", failed: "red", pending: "yellow" } },
   { key: "Content", label: "Content", truncate: 80 },
   { key: "Image", label: "Image", type: "image" },
 ];
 
 const manualColumns: ColumnDef[] = [
-  { key: "Submitted At", label: "Submitted At", type: "date" },
-  { key: "Topic", label: "Topic", truncate: 60 },
-  { key: "Content", label: "Content", truncate: 80 },
-  { key: "Schedule Time", label: "Schedule Time", type: "date" },
-  { key: "Posted?", label: "Posted?", type: "badge", badgeMap: { yes: "green", no: "yellow", true: "green", false: "yellow" } },
-  { key: "Post In", label: "Post In", type: "badge", badgeMap: { facebook: "blue", linkedin: "purple", both: "gold" } },
-  { key: "Posted Time", label: "Posted Time", type: "date" },
-  { key: "Image", label: "Image", type: "image" },
-  { key: "Video", label: "Video", type: "video" },
-  { key: "Generated Content", label: "Generated Content", truncate: 80 },
-  { key: "Generated Image", label: "Generated Image", type: "image" },
+  { key: "submit_at", label: "Submitted At", type: "date" },
+  { key: "topic", label: "Topic", truncate: 60 },
+  { key: "content", label: "Content", truncate: 80 },
+  { key: "schedule_time", label: "Schedule Time", type: "date" },
+  { key: "posted?", label: "Posted?", type: "badge", badgeMap: { yes: "green", no: "yellow", true: "green", false: "yellow", "yes...": "green" } },
+  { key: "post_in", label: "Post In", type: "badge", badgeMap: { facebook: "blue", linkedin: "purple", both: "gold" } },
+  { key: "posted_time", label: "Posted Time", type: "date" },
+  { key: "img_url", label: "Image", type: "image" },
+  { key: "vid_url", label: "Video", type: "video" },
+  { key: "gen_content", label: "Generated Content", truncate: 80 },
+  { key: "gen_img", label: "Generated Image", type: "image" },
 ];
 
 const blogColumns: ColumnDef[] = [
-  { key: "Blog URL", label: "Blog URL", type: "link" },
-  { key: "Schedule Time", label: "Schedule Time", type: "date" },
-  { key: "Posted?", label: "Posted?", type: "badge", badgeMap: { yes: "green", no: "yellow", true: "green", false: "yellow" } },
-  { key: "Submitted At", label: "Submitted At", type: "date" },
-  { key: "Generated Content", label: "Generated Content", truncate: 80 },
-  { key: "Generated Image", label: "Generated Image", type: "image" },
-  { key: "Post In", label: "Post In", type: "badge", badgeMap: { facebook: "blue", linkedin: "purple", both: "gold" } },
-  { key: "Posted At", label: "Posted At", type: "date" },
+  { key: "link", label: "Blog URL", type: "link" },
+  { key: "title", label: "Title", truncate: 60 },
+  { key: "status", label: "Status", type: "badge", badgeMap: { posted: "green", failed: "red", pending: "yellow" } },
+  { key: "timestamp", label: "Posted At", type: "date" },
+  { key: "Content", label: "Content", truncate: 80 },
+  { key: "Image", label: "Image", type: "image" },
 ];
 
 const youtubeColumns: ColumnDef[] = [
-  { key: "Summary", label: "Summary", truncate: 100 },
-  { key: "Schedule Time", label: "Schedule Time", type: "date" },
-  { key: "Posted?", label: "Posted?", type: "badge", badgeMap: { yes: "green", no: "yellow", true: "green", false: "yellow" } },
-  { key: "Submitted At", label: "Submitted At", type: "date" },
-  { key: "Generated Content", label: "Generated Content", truncate: 80 },
-  { key: "Generated Image", label: "Generated Image", type: "image" },
-  { key: "Post In", label: "Post In", type: "badge", badgeMap: { facebook: "blue", linkedin: "purple", both: "gold" } },
-  { key: "Posted At", label: "Posted At", type: "date" },
+  { key: "summary", label: "Summary", truncate: 100 },
+  { key: "schedule_time", label: "Schedule Time", type: "date" },
+  { key: "posted?", label: "Posted?", type: "badge", badgeMap: { yes: "green", no: "yellow", true: "green", false: "yellow" } },
+  { key: "submitted_at", label: "Submitted At", type: "date" },
+  { key: "gen_content", label: "Generated Content", truncate: 80 },
+  { key: "gen_img", label: "Generated Image", type: "image" },
+  { key: "post_in", label: "Post In", type: "badge", badgeMap: { facebook: "blue", linkedin: "purple", both: "gold" } },
+  { key: "posted_at", label: "Posted At", type: "date" },
 ];
 
 const columnMap: Record<TabKey, ColumnDef[]> = {
@@ -61,16 +59,16 @@ const columnMap: Record<TabKey, ColumnDef[]> = {
 };
 
 const searchKeys: Record<TabKey, string[]> = {
-  rss: ["Title", "Content"],
-  manual: ["Topic", "Content"],
-  blog: ["Blog URL", "Generated Content"],
-  youtube: ["Summary", "Generated Content"],
+  rss: ["title", "Content"],
+  manual: ["topic", "content"],
+  blog: ["title", "Content"],
+  youtube: ["summary", "gen_content"],
 };
 
 function getStatus(row: Record<string, string>, tab: TabKey): string {
-  if (tab === "rss") return (row["Status"] || "").toLowerCase();
-  const v = (row["Posted?"] || "").toLowerCase();
-  if (v === "yes" || v === "true") return "posted";
+  if (tab === "rss" || tab === "blog") return (row["status"] || "").toLowerCase();
+  const v = (row["posted?"] || "").toLowerCase();
+  if (v === "yes" || v === "true" || v.startsWith("yes")) return "posted";
   if (v === "no" || v === "false" || v === "") return "pending";
   return v;
 }
