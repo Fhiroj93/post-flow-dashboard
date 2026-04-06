@@ -66,9 +66,7 @@ export function useGoogleSheets() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [progress, setProgress] = useState(0);
   const isFirstLoad = useRef(true);
-  const progressRef = useRef<ReturnType<typeof setInterval>>();
 
   const fetchAll = useCallback(async (isManual = false) => {
     if (!isFirstLoad.current) setSyncing(true);
@@ -105,9 +103,8 @@ export function useGoogleSheets() {
   }, [loading, fetchAll]);
 
   const refresh = useCallback(() => {
-    setProgress(0);
     fetchAll(true);
   }, [fetchAll]);
 
-  return { data, loading, syncing, lastUpdated, progress, refresh };
+  return { data, loading, syncing, lastUpdated, refresh };
 }
