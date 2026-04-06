@@ -14,6 +14,7 @@ interface Props {
   columns: ColumnDef[];
   loading: boolean;
   onImageClick: (src: string) => void;
+  onRowClick?: (row: SheetRow) => void;
 }
 
 function cell(val: string) {
@@ -51,7 +52,7 @@ function badgeClass(color: string) {
   return map[color] || map.gray;
 }
 
-const DataTable = ({ rows, columns, loading, onImageClick }: Props) => {
+const DataTable = ({ rows, columns, loading, onImageClick, onRowClick }: Props) => {
   if (loading) {
     return (
       <div className="px-4 sm:px-6 space-y-2">
@@ -88,7 +89,8 @@ const DataTable = ({ rows, columns, loading, onImageClick }: Props) => {
           {rows.map((row, i) => (
             <tr
               key={i}
-              className={`border-b border-border hover:bg-table-hover transition-colors ${i % 2 === 1 ? "bg-table-row-alt" : ""}`}
+              className={`border-b border-border hover:bg-table-hover transition-colors cursor-pointer ${i % 2 === 1 ? "bg-table-row-alt" : ""}`}
+              onClick={() => onRowClick?.(row)}
             >
               <td className="px-3 py-2.5 text-muted-foreground">{i + 1}</td>
               {columns.map((col) => {

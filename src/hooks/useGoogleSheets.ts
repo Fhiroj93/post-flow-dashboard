@@ -66,9 +66,7 @@ export function useGoogleSheets() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [progress, setProgress] = useState(0);
   const isFirstLoad = useRef(true);
-  const progressRef = useRef<ReturnType<typeof setInterval>>();
 
   const fetchAll = useCallback(async (isManual = false) => {
     if (!isFirstLoad.current) setSyncing(true);
@@ -76,7 +74,13 @@ export function useGoogleSheets() {
       const [rss, manual, blog, youtube] = await Promise.all(
         (Object.keys(SHEET_NAMES) as SheetKey[]).map((k) => fetchSheet(SHEET_NAMES[k]))
       );
-      setData({ rss, manual, blog, youtube });
+      // Reverse so newest rows appear first
+      setData({
+        rss: [...rss].reverse(),
+        manual: [...manual].reverse(),
+        blog: [...blog].reverse(),
+        youtube: [...youtube].reverse(),
+      });
       setLastUpdated(new Date());
     } finally {
       setLoading(false);
@@ -89,36 +93,18 @@ export function useGoogleSheets() {
     fetchAll();
   }, [fetchAll]);
 
-  // Auto-refresh + progress bar
+  // Auto-refresh silently
   useEffect(() => {
     if (loading) return;
-    setProgress(0);
-    const startTime = Date.now();
-    progressRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const pct = Math.min((elapsed / REFRESH_INTERVAL) * 100, 100);
-      setProgress(pct);
-      if (pct >= 100) {
-        clearInterval(progressRef.current);
-      }
-    }, 100);
-
-    const refreshTimer = setTimeout(() => {
-      clearInterval(progressRef.current);
-      setProgress(0);
+    const refreshTimer = setInterval(() => {
       fetchAll();
     }, REFRESH_INTERVAL);
-
-    return () => {
-      clearInterval(progressRef.current);
-      clearTimeout(refreshTimer);
-    };
-  }, [loading, lastUpdated, fetchAll]);
+    return () => clearInterval(refreshTimer);
+  }, [loading, fetchAll]);
 
   const refresh = useCallback(() => {
-    setProgress(0);
     fetchAll(true);
   }, [fetchAll]);
 
-  return { data, loading, syncing, lastUpdated, progress, refresh };
+  return { data, loading, syncing, lastUpdated, refresh };
 }
