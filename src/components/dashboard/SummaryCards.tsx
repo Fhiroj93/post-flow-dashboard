@@ -20,37 +20,40 @@ function countToday(data: SheetsData): number {
   let count = 0;
   const allRows = [...data.rss, ...data.manual, ...data.blog, ...data.youtube];
   allRows.forEach((r) => {
-    const ts = r["Posted Time"] || r["Posted At"] || r["posted_time"] || r["Submitted At"] || "";
+    const ts = r["posted_time"] || r["posted_at"] || r["timestamp"] || r["submit_at"] || r["submitted_at"] || "";
     if (isToday(ts)) count++;
   });
   return count;
 }
 
 function countPending(data: SheetsData): number {
-  const all = [...data.manual, ...data.blog, ...data.youtube];
   const rss = data.rss.filter((r) => {
-    const s = (r["Status"] || "").toLowerCase();
+    const s = (r["status"] || "").toLowerCase();
     return s === "pending" || s === "";
   }).length;
-  const other = all.filter((r) => {
-    const v = (r["Posted?"] || "").toLowerCase();
+  const blog = data.blog.filter((r) => {
+    const s = (r["status"] || "").toLowerCase();
+    return s === "pending" || s === "";
+  }).length;
+  const other = [...data.manual, ...data.youtube].filter((r) => {
+    const v = (r["posted?"] || "").toLowerCase();
     return v === "no" || v === "false" || v === "";
   }).length;
-  return rss + other;
+  return rss + blog + other;
 }
 
 function countPosted(data: SheetsData): number {
-  const rss = data.rss.filter((r) => (r["Status"] || "").toLowerCase() === "posted").length;
-  const all = [...data.manual, ...data.blog, ...data.youtube];
-  const other = all.filter((r) => {
-    const v = (r["Posted?"] || "").toLowerCase();
-    return v === "yes" || v === "true";
+  const rss = data.rss.filter((r) => (r["status"] || "").toLowerCase() === "posted").length;
+  const blog = data.blog.filter((r) => (r["status"] || "").toLowerCase() === "posted").length;
+  const other = [...data.manual, ...data.youtube].filter((r) => {
+    const v = (r["posted?"] || "").toLowerCase();
+    return v === "yes" || v === "true" || v.startsWith("yes");
   }).length;
-  return rss + other;
+  return rss + blog + other;
 }
 
 function countFailed(data: SheetsData): number {
-  return data.rss.filter((r) => (r["Status"] || "").toLowerCase() === "failed").length;
+  return data.rss.filter((r) => (r["status"] || "").toLowerCase() === "failed").length;
 }
 
 const cards = [
