@@ -97,7 +97,7 @@ const Index = () => {
   return (
     <div className="min-h-screen animated-bg transition-theme">
       <div className="max-w-7xl mx-auto">
-        <Header dark={dark} onToggleTheme={toggle} lastUpdated={lastUpdated} syncing={syncing} onRefresh={refresh} />
+        <Header dark={dark} onToggleTheme={toggle} syncing={syncing} onRefresh={refresh} />
         <SummaryCards data={data} loading={loading} />
         <TabSwitcher active={tab} onChange={(t) => { setTab(t); setSearch(""); setStatusFilter("all"); }} />
         <SearchFilter search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} />

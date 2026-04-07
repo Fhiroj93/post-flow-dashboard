@@ -1,14 +1,13 @@
-import { Sun, Moon, RefreshCw } from "lucide-react";
+import { Sun, Moon, RefreshCw, ExternalLink } from "lucide-react";
 
 interface Props {
   dark: boolean;
   onToggleTheme: () => void;
-  lastUpdated: Date | null;
   syncing: boolean;
   onRefresh: () => void;
 }
 
-const Header = ({ dark, onToggleTheme, lastUpdated, syncing, onRefresh }: Props) => (
+const Header = ({ dark, onToggleTheme, syncing, onRefresh }: Props) => (
   <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border transition-theme">
     <div>
       <div className="flex items-center gap-2">
@@ -18,17 +17,13 @@ const Header = ({ dark, onToggleTheme, lastUpdated, syncing, onRefresh }: Props)
       <p className="text-xs text-muted-foreground mt-0.5">Live Dashboard</p>
     </div>
     <div className="flex items-center gap-3">
-      <div className="hidden sm:flex flex-col items-end text-xs text-muted-foreground">
-        <span>
-          Last updated:{" "}
-          {lastUpdated
-            ? lastUpdated.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true })
-            : "—"}
-        </span>
-        {syncing && (
-          <span className="text-primary text-[10px] font-medium mt-0.5">Syncing...</span>
-        )}
-      </div>
+      <button
+        onClick={() => window.open("https://fb-autopost.lovable.app", "_blank", "noopener,noreferrer,popup,width=1000,height=700")}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-status-posted/20 text-status-posted text-sm font-medium hover:bg-status-posted/30 transition-theme"
+      >
+        <ExternalLink size={14} />
+        <span className="hidden sm:inline">Post Now</span>
+      </button>
       <button
         onClick={onToggleTheme}
         className="p-2 rounded-lg bg-card border border-border hover:bg-accent transition-theme"

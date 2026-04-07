@@ -28,8 +28,15 @@ function isVideoUrl(val: string): boolean {
   return /\.(mp4|webm|mov)(\?|$)/i.test(val) || val.includes("youtube.com") || val.includes("youtu.be");
 }
 
+function cleanArrayBrackets(val: string): string {
+  const match = val.match(/^\[(.+)\]$/);
+  if (match) return match[1].replace(/"/g, "").trim();
+  return val;
+}
+
 function formatValue(val: string): string {
   if (!val || !val.trim()) return "—";
+  val = cleanArrayBrackets(val);
   // Handle Google Sheets date format like Date(2026,2,17,9,0,0)
   const dateMatch = val.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)$/);
   if (dateMatch) {

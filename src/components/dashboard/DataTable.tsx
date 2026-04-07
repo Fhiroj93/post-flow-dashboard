@@ -17,8 +17,19 @@ interface Props {
   onRowClick?: (row: SheetRow) => void;
 }
 
+function cleanArrayBrackets(val: string): string {
+  // Remove ["..."] wrapper and clean up quotes
+  const match = val.match(/^\[(.+)\]$/);
+  if (match) {
+    return match[1].replace(/"/g, "").trim();
+  }
+  return val;
+}
+
 function cell(val: string) {
-  return val?.trim() || "—";
+  const v = val?.trim() || "—";
+  if (v === "—") return v;
+  return cleanArrayBrackets(v);
 }
 
 function truncate(val: string, max: number) {
