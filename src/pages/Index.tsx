@@ -8,6 +8,7 @@ import SearchFilter from "@/components/dashboard/SearchFilter";
 import DataTable, { type ColumnDef } from "@/components/dashboard/DataTable";
 import ImageModal from "@/components/dashboard/ImageModal";
 import RowDetailSidebar from "@/components/dashboard/RowDetailSidebar";
+import PageAnalytics from "@/components/dashboard/PageAnalytics";
 
 const rssColumns: ColumnDef[] = [
   { key: "title", label: "Title", truncate: 60 },
@@ -65,12 +66,32 @@ const searchKeys: Record<TabKey, string[]> = {
   youtube: ["summary", "gen_content"],
 };
 
+function cleanVal(val: string): string {
+  const match = val.match(/^\[(.+)\]$/);
+  if (match) return match[1].replace(/"/g, "").trim();
+  return val;
+}
+
 function getStatus(row: Record<string, string>, tab: TabKey): string {
   if (tab === "rss" || tab === "blog") return (row["status"] || "").toLowerCase();
   const v = (row["posted?"] || "").toLowerCase();
   if (v === "yes" || v === "true" || v.startsWith("yes")) return "posted";
   if (v === "no" || v === "false" || v === "") return "pending";
   return v;
+}
+
+function extractPages(data: { manual: SheetRow[]; youtube: SheetRow[] }): string[] {
+  const set = new Set<string>();
+  [...data.manual, ...data.youtube].forEach((row) => {
+    const raw = (row["post_in"] || "").toLowerCase().trim();
+    if (!raw) return;
+    const cleaned = cleanVal(raw);
+    cleaned.split(",").forEach((p) => {
+      const trimmed = p.trim();
+      if (trimmed) set.add(trimmed);
+    });
+  });
+  return Array.from(set).sort();
 }
 
 const Index = () => {
@@ -81,6 +102,9 @@ const Index = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<SheetRow | null>(null);
+  const [selectedPage, setSelectedPage] = useState("all");
+
+  const pages = useMemo(() => extractPages(data), [data]);
 
   const filteredRows = useMemo(() => {
     let rows = data[tab];
@@ -94,14 +118,37 @@ const Index = () => {
     return rows;
   }, [data, tab, search, statusFilter]);
 
+  const showPageAnalytics = selectedPage !== "all";
+
   return (
     <div className="min-h-screen animated-bg transition-theme">
       <div className="max-w-7xl mx-auto">
-        <Header dark={dark} onToggleTheme={toggle} syncing={syncing} onRefresh={refresh} />
-        <SummaryCards data={data} loading={loading} />
-        <TabSwitcher active={tab} onChange={(t) => { setTab(t); setSearch(""); setStatusFilter("all"); }} />
-        <SearchFilter search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} />
-        <DataTable rows={filteredRows} columns={columnMap[tab]} loading={loading} onImageClick={setModalImage} onRowClick={setSelectedRow} />
+        <Header
+          dark={dark}
+          onToggleTheme={toggle}
+          syncing={syncing}
+          onRefresh={refresh}
+          pages={pages}
+          selectedPage={selectedPage}
+          onPageChange={setSelectedPage}
+        />
+
+        {showPageAnalytics ? (
+          <PageAnalytics
+            data={data}
+            page={selectedPage}
+            onRowClick={setSelectedRow}
+            onImageClick={setModalImage}
+          />
+        ) : (
+          <>
+            <SummaryCards data={data} loading={loading} />
+            <TabSwitcher active={tab} onChange={(t) => { setTab(t); setSearch(""); setStatusFilter("all"); }} />
+            <SearchFilter search={search} onSearch={setSearch} status={statusFilter} onStatus={setStatusFilter} />
+            <DataTable rows={filteredRows} columns={columnMap[tab]} loading={loading} onImageClick={setModalImage} onRowClick={setSelectedRow} />
+          </>
+        )}
+
         <footer className="text-center py-6 text-xs text-muted-foreground">
           PostFlow Dashboard v1.0 — {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </footer>
