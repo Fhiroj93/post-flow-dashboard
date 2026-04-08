@@ -1,13 +1,23 @@
-import { Sun, Moon, RefreshCw, ExternalLink } from "lucide-react";
+import { Sun, Moon, RefreshCw, ExternalLink, ChevronDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   dark: boolean;
   onToggleTheme: () => void;
   syncing: boolean;
   onRefresh: () => void;
+  pages: string[];
+  selectedPage: string;
+  onPageChange: (page: string) => void;
 }
 
-const Header = ({ dark, onToggleTheme, syncing, onRefresh }: Props) => (
+const Header = ({ dark, onToggleTheme, syncing, onRefresh, pages, selectedPage, onPageChange }: Props) => (
   <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border transition-theme">
     <div>
       <div className="flex items-center gap-2">
@@ -17,6 +27,21 @@ const Header = ({ dark, onToggleTheme, syncing, onRefresh }: Props) => (
       <p className="text-xs text-muted-foreground mt-0.5">Live Dashboard</p>
     </div>
     <div className="flex items-center gap-3">
+      {/* Page Selector */}
+      <Select value={selectedPage} onValueChange={onPageChange}>
+        <SelectTrigger className="w-[140px] h-9 text-xs bg-card border-border">
+          <SelectValue placeholder="All Pages" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Pages</SelectItem>
+          {pages.map((p) => (
+            <SelectItem key={p} value={p} className="capitalize">
+              {p}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       <button
         onClick={() => window.open("https://fb-autopost.lovable.app", "_blank", "noopener,noreferrer,popup,width=1000,height=700")}
         className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-status-posted/20 text-status-posted text-sm font-medium hover:bg-status-posted/30 transition-theme"
