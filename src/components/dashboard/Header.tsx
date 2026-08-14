@@ -19,13 +19,23 @@ interface Props {
 
 const Header = ({ dark, onToggleTheme, syncing, onRefresh, pages, selectedPage, onPageChange }: Props) => (
   <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border transition-theme">
-    <div>
-      <div className="flex items-center gap-2">
-        <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">PostFlow</h1>
-        <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse-dot" />
+    <div className="flex items-center gap-3">
+      <img
+        src="/logo-icon.png"
+        alt="PostFloww logo"
+        width={40}
+        height={40}
+        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl shrink-0"
+      />
+      <div>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">PostFloww</h1>
+          <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse-dot" />
+        </div>
+        <p className="text-xs text-muted-foreground mt-0.5">Live Dashboard</p>
       </div>
-      <p className="text-xs text-muted-foreground mt-0.5">Live Dashboard</p>
     </div>
+
     <div className="flex items-center gap-3">
       {/* Page Selector */}
       <Select value={selectedPage} onValueChange={onPageChange}>
