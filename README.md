@@ -1,11 +1,35 @@
+![CI](https://github.com/Fhiroj93/post-flow-dashboard/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3-38BDF8?logo=tailwindcss&logoColor=white)
+
 # PostFlow Dashboard
+
+**[Live Demo →](https://postfloww-dash.netlify.app/)**
 
 A real-time monitoring dashboard for a multi-channel social media automation pipeline. It reads directly from a Google Sheet that an automation workflow writes to, and shows what's been posted, what's pending, and what failed — across RSS-sourced posts, manually submitted posts, blog posts, and YouTube posts.
 
+## Contents
+
+- [Why this exists](#why-this-exists)
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Screenshots](#screenshots)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Configuration](#configuration)
+- [Data source notes](#data-source-notes)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Possible improvements](#possible-improvements)
+- [Known limitations](#known-limitations)
+- [License](#license)
 
 ## Why this exists
 
-DESCRIBE IN YOUR OWN WORDS WHY YOU BUILT THIS — e.g. "The automation pipeline posts to Facebook/LinkedIn on a schedule and logs every action to a spreadsheet. There was no way to see pipeline health at a glance without opening the sheet manually, so this dashboard gives a live view instead."
+The automation pipeline posts to Facebook and other channels on a schedule and logs every action — RSS-sourced posts, manual submissions, blog posts, and YouTube uploads — to a single Google Sheet. Checking pipeline health meant opening that sheet and manually scanning four tabs for failures, which doesn't scale once the pipeline is running unattended. This dashboard turns that sheet into a live, at-a-glance view: totals, pending items, and failures across every channel, auto-refreshing without needing to touch the spreadsheet at all.
 
 ## Features
 
@@ -24,15 +48,43 @@ DESCRIBE IN YOUR OWN WORDS WHY YOU BUILT THIS — e.g. "The automation pipeline 
 - TanStack Query, React Router
 - Data source: Google Sheets `gviz` JSON endpoint (no API key needed for a publicly readable sheet)
 
+## Screenshots
+
+<!--
+Replace these with real images once uploaded to a `docs/` folder in the repo.
+See the "Getting started" section of the project guide for how to upload them
+directly through GitHub's web UI (Add file → Upload files).
+-->
+
+| Light mode | Dark mode |
+|---|---|
+| ![Light mode](./docs/screenshot-light.png) | ![Dark mode](./docs/screenshot-dark.png) |
+
+![Row detail view](./docs/screenshot-detail.png)
+
+## Project structure
+
+```
+src/
+├── components/
+│   ├── dashboard/       # feature components: Header, SummaryCards, DataTable, RowDetailSidebar, etc.
+│   └── ui/              # shadcn/ui primitives actually used by this app (button, dialog, select, ...)
+├── hooks/
+│   └── useGoogleSheets.ts   # fetches + parses the Google Sheets gviz JSON endpoint
+├── pages/               # route-level components
+├── lib/                 # shared utilities
+└── App.tsx              # app shell, routing, providers
+```
+
 ## Getting started
 
-\`\`\`bash
-git clone YOUR-REPO-URL
-cd YOUR-REPO-NAME
+```bash
+git clone https://github.com/Fhiroj93/post-flow-dashboard.git
+cd post-flow-dashboard
 npm install
 cp .env.example .env   # then fill in your own sheet ID/tab names
 npm run dev
-\`\`\`
+```
 
 ## Configuration
 
@@ -50,14 +102,21 @@ This dashboard reads the Google Visualization API JSON endpoint (`/gviz/tq?tqx=o
 
 ## Testing
 
-\`\`\`bash
+```bash
 npm run test        # unit tests (vitest)
 npx playwright test # e2e (requires the dev server running)
-\`\`\`
+```
 
 ## Deployment
 
 Deployed on Netlify. See `netlify.toml` for build settings and the SPA redirect rule required for client-side routing.
+
+## Possible improvements
+
+- Add write-back support (mark a failed post for retry directly from the dashboard)
+- Add basic auth so the dashboard isn't fully public
+- Swap manual polling for a websocket/webhook push from the automation pipeline
+- Add per-channel analytics (posting frequency over time, failure rate trend)
 
 ## Known limitations
 
