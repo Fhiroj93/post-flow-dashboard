@@ -53,13 +53,6 @@ const Header = ({ dark, onToggleTheme, syncing, onRefresh, pages, selectedPage, 
       </Select>
 
       <button
-        onClick={() => window.open("https://fb-autopost.lovable.app", "_blank", "noopener,noreferrer,popup,width=1000,height=700")}
-        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-status-posted/20 text-status-posted text-sm font-medium hover:bg-status-posted/30 transition-theme"
-      >
-        <ExternalLink size={14} />
-        <span className="hidden sm:inline">Post Now</span>
-      </button>
-      <button
         onClick={onToggleTheme}
         className="p-2 rounded-lg bg-card border border-border hover:bg-accent transition-theme"
         aria-label="Toggle theme"
