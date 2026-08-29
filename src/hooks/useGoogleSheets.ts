@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-const SPREADSHEET_ID = "13Y5WstWfrY17JjQxRIQZA1nPi1AzNAhvnfIUOikZm6M";
+const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID as string;
 const SHEET_NAMES = {
-  rss: "RSS_Log",
-  manual: "Manual",
-  blog: "Blog",
-  youtube: "Utube",
+  rss: import.meta.env.VITE_SHEET_RSS as string,
+  manual: import.meta.env.VITE_SHEET_MANUAL as string,
+  blog: import.meta.env.VITE_SHEET_BLOG as string,
+  youtube: import.meta.env.VITE_SHEET_YOUTUBE as string,
 } as const;
 
 type SheetKey = keyof typeof SHEET_NAMES;
@@ -25,7 +25,7 @@ function buildUrl(sheetName: string) {
   return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
 
-function parseResponse(text: string): SheetRow[] {
+export function parseResponse(text: string): SheetRow[] {
   const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);
   if (!match) return [];
   try {
@@ -51,7 +51,9 @@ async function fetchSheet(sheetName: string): Promise<SheetRow[]> {
   try {
     const res = await fetch(buildUrl(sheetName));
     const text = await res.text();
-    console.log(`[PostFlow] Fetched ${sheetName}:`, text.substring(0, 200));
+    if (import.meta.env.DEV) {
+  console.debug(`[PostFlow] Fetched ${sheetName}`);
+}
     return parseResponse(text);
   } catch (e) {
     console.error(`[PostFlow] Error fetching ${sheetName}:`, e);
@@ -59,7 +61,7 @@ async function fetchSheet(sheetName: string): Promise<SheetRow[]> {
   }
 }
 
-const REFRESH_INTERVAL = 15000;
+const REFRESH_INTERVAL = Number(import.meta.env.VITE_REFRESH_INTERVAL_MS) || 15000;
 
 export function useGoogleSheets() {
   const [data, setData] = useState<SheetsData>({ rss: [], manual: [], blog: [], youtube: [] });
