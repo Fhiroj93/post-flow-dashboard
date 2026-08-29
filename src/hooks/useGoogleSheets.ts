@@ -25,7 +25,7 @@ function buildUrl(sheetName: string) {
   return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
 
-function parseResponse(text: string): SheetRow[] {
+export function parseResponse(text: string): SheetRow[] {
   const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);
   if (!match) return [];
   try {
