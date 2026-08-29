@@ -2,7 +2,6 @@
 
 A real-time monitoring dashboard for a multi-channel social media automation pipeline. It reads directly from a Google Sheet that an automation workflow writes to, and shows what's been posted, what's pending, and what failed — across RSS-sourced posts, manually submitted posts, blog posts, and YouTube posts.
 
-![Dashboard screenshot](./docs/screenshot-dark.png)
 
 ## Why this exists
 
