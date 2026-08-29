@@ -11,22 +11,6 @@
 
 A real-time monitoring dashboard for a multi-channel social media automation pipeline. It reads directly from a Google Sheet that an automation workflow writes to, and shows what's been posted, what's pending, and what failed — across RSS-sourced posts, manually submitted posts, blog posts, and YouTube posts.
 
-## Contents
-
-- [Why this exists](#why-this-exists)
-- [Features](#features)
-- [Tech stack](#tech-stack)
-- [Screenshots](#screenshots)
-- [Project structure](#project-structure)
-- [Getting started](#getting-started)
-- [Configuration](#configuration)
-- [Data source notes](#data-source-notes)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Possible improvements](#possible-improvements)
-- [Known limitations](#known-limitations)
-- [License](#license)
-
 ## Why this exists
 
 The automation pipeline posts to Facebook and other channels on a schedule and logs every action — RSS-sourced posts, manual submissions, blog posts, and YouTube uploads — to a single Google Sheet. Checking pipeline health meant opening that sheet and manually scanning four tabs for failures, which doesn't scale once the pipeline is running unattended. This dashboard turns that sheet into a live, at-a-glance view: totals, pending items, and failures across every channel, auto-refreshing without needing to touch the spreadsheet at all.
@@ -47,20 +31,6 @@ The automation pipeline posts to Facebook and other channels on a schedule and l
 - Tailwind CSS, shadcn/ui (Radix primitives)
 - TanStack Query, React Router
 - Data source: Google Sheets `gviz` JSON endpoint (no API key needed for a publicly readable sheet)
-
-## Screenshots
-
-<!--
-Replace these with real images once uploaded to a `docs/` folder in the repo.
-See the "Getting started" section of the project guide for how to upload them
-directly through GitHub's web UI (Add file → Upload files).
--->
-
-| Light mode | Dark mode |
-|---|---|
-| ![Light mode](./docs/screenshot-light.png) | ![Dark mode](./docs/screenshot-dark.png) |
-
-![Row detail view](./docs/screenshot-detail.png)
 
 ## Project structure
 
