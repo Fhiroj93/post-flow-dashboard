@@ -57,7 +57,9 @@ function formatValue(val: string): string {
           hour: "numeric", minute: "2-digit", hour12: true,
         });
       }
-    } catch {}
+        } catch {
+      // not a valid date string — fall through and return the raw value
+    }
   }
   return val;
 }
